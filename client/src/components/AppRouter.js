@@ -4,7 +4,7 @@ import { authRoutes, publicRoutes } from '../routes'
 import { LOGIN_ROUTE } from '../utils/consts'
 
 export const AppRouter = () => {
-  const isAuth = false
+  const isAuth = true
   return (
     <Switch>
       {isAuth && authRoutes.map(({ path, Component }) =>
