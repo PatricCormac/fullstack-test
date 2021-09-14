@@ -1,0 +1,81 @@
+.phone-book {
+
+
+  &__wrapper {
+
+    padding: 0 10px;
+  }
+
+  &__header {
+    margin-top: 30px;
+    padding: 15px 10px;
+
+  }
+
+  &__input {
+    width: 100%;
+    font-size: 22px;
+
+    label {
+      cursor: pointer;
+    }
+
+    input {
+      box-sizing: border-box;
+      display: block;
+      padding: 5px 10px;
+      font-size: 18px;
+      margin-top: 5px;
+      outline: none;
+      border: 2px solid #f2f2f2;
+      border-radius: 5px;
+    }
+
+    button {
+      font-size: 18px;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+  }
+
+  &__body {
+    padding: 15px 10px;
+
+  }
+
+  &__list {
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 10px;
+
+    &-item {
+      width: 10%;
+      margin: 0 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+
+  &__delete-button {
+    cursor: pointer;
+    display: flex;
+    padding: 5px;
+
+    span {
+      display: block;
+      width: 2px;
+      height: 15px;
+      background-color: #ee1919;
+
+      &:first-child {
+        transform: rotate(45deg);
+      }
+
+      &:last-child {
+        margin-left: -2px;
+        transform: rotate(-45deg);
+      }
+    }
+  }
+}
