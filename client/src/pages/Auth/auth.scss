@@ -14,9 +14,10 @@
     flex-wrap: wrap;
     gap: 20px;
     padding: 30px 50px;
-    background-color: #582781;
     border-radius: 15px;
     color: #00A383;
+    background: rgba(255, 255, 255, .7);
+    backdrop-filter: blur(10px);
   }
 
   &__title {
@@ -51,10 +52,17 @@
     }
   }
 
+  &__error {
+    color: rgb(255, 0, 0);
+    font-weight: 700;
+    margin-top: 10px;
+  }
+
   &__bottom {
     width: 100%;
     display: flex;
     justify-content: space-between;
+    align-items: center;
 
     .form__input {
       width: auto;
