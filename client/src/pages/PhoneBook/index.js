@@ -62,7 +62,7 @@ const PhoneBook = (props) => {
 const mapStateToProps = state => {
   
   return {
-    user: state.user.user,
+    user: state.user.data,
     numbers: state.phoneBook.numbers,
   }
 }
