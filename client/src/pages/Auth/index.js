@@ -1,22 +1,23 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
-import { authUser } from '../../store/user/actions'
-import { Link, useLocation } from 'react-router-dom'
-import { LOGIN_ROUTE, REGISTRATION_ROUTE } from '../../utils/consts'
+import { setUser } from '../../store/user/actions'
+import { Link, useLocation, useHistory } from 'react-router-dom'
+import { LOGIN_ROUTE, PHONE_BOOK_ROUTE, REGISTRATION_ROUTE } from '../../utils/consts'
 import './auth.scss'
+import { login, registration } from '../../http/userApi'
 
 const Auth = (props) => {
+  const { setUser, user } = props
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
-  const { authUser } = props
+
+  const history = useHistory()
   const location = useLocation()
   const isLogin = location.pathname === LOGIN_ROUTE
 
   const inputHandler = (e) => {
     const { value, name } = e.target
 
-    setError('')
     if (name === 'email') {
       setEmail(value)
     }
@@ -25,25 +26,38 @@ const Auth = (props) => {
     }
   }
 
-  const submitHandler = (e) => {
+  const submit = async (e) => {
     e.preventDefault()
 
     if (email === '' || password === '') {
-      setError("Заполните поля")
+      alert("Заполните поля")
       return
     }
 
-    authUser({ email })
-    setEmail('')
-    setPassword('')
-    props.history.push('/')
+    try {
+      let user
+
+      if(isLogin) {
+        user = await login(email, password)
+      } else {
+        user = await registration(email, password)
+      }
+
+      setUser(user)
+      history.push(PHONE_BOOK_ROUTE)
+      setEmail('')
+      setPassword('')
+    } catch(e) {
+      alert(e.response.data.message)
+      console.log(e.response.data.message);
+    }
   }
 
   return (
     <div className="form">
       <div className="container">
         <div className="form__holder">
-          <form onSubmit={submitHandler} className="form__card">
+          <form onSubmit={submit} className="form__card">
             <h2 className="form__title">{ isLogin ? 'Авторизаци' : 'Регистрация' }</h2>
             <div className="form__input">
               <label htmlFor="email">Email</label>
@@ -57,7 +71,6 @@ const Auth = (props) => {
               <div>
                 { isLogin ? <div>Нет аккаунта? <Link to={REGISTRATION_ROUTE}>Зарегистрироваться</Link></div>
                 : <div>Есть аккаунт? <Link to={LOGIN_ROUTE}>Войти</Link></div> }
-                <div className="form__error">{ error }</div>
               </div>
               <div className="form__input">
                 <button type="submit">{ isLogin ? 'Войти' : 'Зарегистрироваться' }</button>
@@ -70,8 +83,14 @@ const Auth = (props) => {
   )
 }
 
-const mapDispatchToProps = {
-  authUser
+const mapStateToProps = (state) => {
+  return {
+    user: state.user
+  }
 }
 
-export default connect(null, mapDispatchToProps)(Auth)
+const mapDispatchToProps = {
+  setUser
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Auth)

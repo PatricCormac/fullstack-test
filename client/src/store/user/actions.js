@@ -1,10 +1,10 @@
-import { AUTH_USER } from "./consts"
+import { SET_USER } from "./consts"
 
-export const authUser = (data) => {
+export const setUser = (data) => {
   return (dispatch) => {
     return dispatch({
-      type: AUTH_USER,
-      payload: data.email
+      type: SET_USER,
+      payload: data
     })
   }
 }
