@@ -1,35 +1,53 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { PhoneBookList } from '../../components/PhoneBookList/PhoneBookList'
-import { addNumber, deleteNumber } from '../../store/phone-book/actions'
+import { getNumbers, postNumber, removeNumber } from '../../http/phoneBookApi'
+import { addNumber, deleteNumber, setNumbers } from '../../store/phone-book/actions'
 import './phone-book.scss'
 
 const PhoneBook = (props) => {
-  const { user, numbers, addNumber, deleteNumber } = props
+  const { user, numbers, addNumber, deleteNumber, setNumbers } = props
   const [inputNumber, setInputNumber] = useState('')
+  const [similarNumbers, setSimilarNumbers] = useState([])
   const [error, setError] = useState('')
 
   const inputNumberHandler = ( event ) => {
-    setInputNumber(event.target.value)
     setError('')
+    setInputNumber(event.target.value)
+    const newSimilar = numbers.filter(number => number.phone_number.includes(event.target.value))
+    if (newSimilar) setSimilarNumbers(newSimilar)
   }
 
   const addNumberHandler = () => {
-    if (numbers.find(number => number.number === inputNumber)) {
+    if (numbers.find(number => number.phone_number === inputNumber)) {
       setError('Номер существует')
       setInputNumber('')
       return
     }
 
-    const newPhoneNumber = { number: inputNumber, owner: 'patric1@mail.ru' }
+    const newPhoneNumber = { phone_number: inputNumber, userId: user.id }
 
     addNumber(newPhoneNumber)
+    postNumber(newPhoneNumber)
     setInputNumber('')
   }
 
   const deleteNumberHandler = (number) => {
     deleteNumber(number)
+    removeNumber(number)
   }
+
+  useEffect(() => {
+    getNumbers().then(data => {
+      setNumbers(data)
+    })
+  }, [])
+
+  useEffect(() => {
+    if (inputNumber === '') {
+      setSimilarNumbers([])
+    }
+  }, [inputNumber])
 
   return (
     <div className="phone-book">
@@ -38,7 +56,14 @@ const PhoneBook = (props) => {
           <div className="phone-book__header">
             <div className="phone-book__input">
               <label htmlFor="phone-number">Телефон</label>
-              <input value={inputNumber} onChange={ inputNumberHandler } id="phone-number" placeholder="Введите телефон" type="text" />
+              <input placeholder="+7 (999)-999-9999" value={inputNumber} autoComplete="off" onChange={ inputNumberHandler } id="phone-number" type="text" />
+              {similarNumbers.length !== 0 && (
+                <div className="phone-book__similar-numbers">
+                  { similarNumbers.map(number => 
+                    <div key={number.phone_number}>{ number.phone_number }</div>
+                  ) }
+                </div>
+              )}
               <span>{ error }</span>
             </div>
             <div className="phone-book__input">
@@ -69,7 +94,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   addNumber,
-  deleteNumber
+  deleteNumber,
+  setNumbers
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(PhoneBook)

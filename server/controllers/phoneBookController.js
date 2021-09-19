@@ -3,8 +3,8 @@ const ApiError = require('../error/ApiError')
 const { Sequelize } = require('sequelize')
 
 exports.create = async function(req, res) {
-  const { phoneNumber } = req.body
-  const createdPhoneNumber = await PhoneBook.create({phone_number: phoneNumber})
+  const { phone_number, userId } = req.body
+  const createdPhoneNumber = await PhoneBook.create({phone_number, userId})
   return res.json(createdPhoneNumber)
 }
 

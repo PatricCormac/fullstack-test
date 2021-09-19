@@ -12,7 +12,6 @@
   }
 
   &__input {
-    width: 100%;
     font-size: 22px;
 
     label {
@@ -55,6 +54,15 @@
       justify-content: space-between;
       align-items: center;
     }
+  }
+
+  &__similar-numbers {
+    position: absolute;
+    border-radius: 5px;
+    z-index: 99;
+    background: #fff;
+    padding: 5px;
+    width: min-content;
   }
 
   &__delete-button {

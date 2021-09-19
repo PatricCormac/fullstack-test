@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import { setUser } from '../../store/user/actions'
 import { Link, useLocation, useHistory } from 'react-router-dom'
+import { setUser } from '../../store/user/actions'
 import { LOGIN_ROUTE, PHONE_BOOK_ROUTE, REGISTRATION_ROUTE } from '../../utils/consts'
-import './auth.scss'
 import { login, registration } from '../../http/userApi'
+import './auth.scss'
 
 const Auth = (props) => {
-  const { setUser, user } = props
+  const { setUser } = props
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 

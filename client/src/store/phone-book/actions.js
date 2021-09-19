@@ -1,4 +1,11 @@
-import { ADD_PHONE_NUMBER, DELETE_PHONE_NUMBER } from "./consts";
+import { ADD_PHONE_NUMBER, DELETE_PHONE_NUMBER, SET_PHONE_NUMBERS } from "./consts";
+
+export function setNumbers(numbers) {
+  return {
+    type: SET_PHONE_NUMBERS,
+    payload: numbers
+  }
+}
 
 export function addNumber(number) {
   return {
@@ -11,7 +18,7 @@ export function deleteNumber(number) {
   return (dispatch, getState) => {
     const { phoneBook } = getState()
 
-    const updatedNumbers = phoneBook.numbers.filter(item => item.number !== number)
+    const updatedNumbers = phoneBook.numbers.filter(item => item.phone_number !== number)
 
     return dispatch({
       type: DELETE_PHONE_NUMBER,
