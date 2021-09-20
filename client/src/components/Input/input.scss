@@ -1,0 +1,37 @@
+.phone-book__input {
+  font-size: 22px;
+
+  label {
+    cursor: pointer;
+  }
+
+  input {
+    box-sizing: border-box;
+    display: block;
+    padding: 5px 10px;
+    font-size: 18px;
+    margin-top: 5px;
+    outline: none;
+    border: 2px solid #b3b3b3;
+    border-radius: 5px;
+
+    &:focus {
+      border-color: #5191f1;
+
+      ~.phone-book__similar-numbers {
+        display: block;
+      }
+    }
+  }
+
+  button {
+    margin-top: 15px;
+    font-size: 18px;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+
+  input.error {
+    border-color: #ff2e27;
+  }
+}

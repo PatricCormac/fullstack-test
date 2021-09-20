@@ -1,35 +1,50 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
+import { Input } from '../../components/Input/Input'
 import { PhoneBookList } from '../../components/PhoneBookList/PhoneBookList'
 import { getNumbers, postNumber, removeNumber } from '../../http/phoneBookApi'
 import { addNumber, deleteNumber, setNumbers } from '../../store/phone-book/actions'
 import './phone-book.scss'
+
+const checkNumber = (number) => {
+  if (number.length >= 11) {
+    const phoneRe = /^(\+{0,})(\d{0,})([(]{1}\d{1,3}[)]{0,}){0,}(\s?\d+|\+\d{2,3}\s{1}\d+|\d+){1}[\s|-]?\d+([\s|-]?\d+){1,2}(\s){0,}$/;
+    console.log({phoneRe});
+    const digits = number.replace(/\D/g, "");
+    console.log({digits});
+    return phoneRe.test(digits);
+  }
+}
 
 const PhoneBook = (props) => {
   const { user, numbers, addNumber, deleteNumber, setNumbers } = props
   const [inputNumber, setInputNumber] = useState('')
   const [similarNumbers, setSimilarNumbers] = useState([])
   const [error, setError] = useState('')
+  const [valid, setValid] = useState(false)
 
   const inputNumberHandler = ( event ) => {
     setError('')
     setInputNumber(event.target.value)
     const newSimilar = numbers.filter(number => number.phone_number.includes(event.target.value))
+    if (checkNumber(event.target.value) && newSimilar.length === 0) {
+      setValid(true)
+    } else {
+      setValid(false)
+      setError('Номер не проходит валидацию')
+    }
+
     if (newSimilar) setSimilarNumbers(newSimilar)
   }
 
   const addNumberHandler = () => {
-    if (numbers.find(number => number.phone_number === inputNumber)) {
-      setError('Номер существует')
+    if (valid) {
+      const newPhoneNumber = { phone_number: inputNumber, userId: user.id }
+
+      addNumber(newPhoneNumber)
+      postNumber(newPhoneNumber)
       setInputNumber('')
-      return
     }
-
-    const newPhoneNumber = { phone_number: inputNumber, userId: user.id }
-
-    addNumber(newPhoneNumber)
-    postNumber(newPhoneNumber)
-    setInputNumber('')
   }
 
   const deleteNumberHandler = (number) => {
@@ -54,18 +69,13 @@ const PhoneBook = (props) => {
       <div className="container">
         <div className="phone-book__wrapper">
           <div className="phone-book__header">
-            <div className="phone-book__input">
-              <label htmlFor="phone-number">Телефон</label>
-              <input placeholder="+7 (999)-999-9999" value={inputNumber} autoComplete="off" onChange={ inputNumberHandler } id="phone-number" type="text" />
-              {similarNumbers.length !== 0 && (
-                <div className="phone-book__similar-numbers">
-                  { similarNumbers.map(number => 
-                    <div key={number.phone_number}>{ number.phone_number }</div>
-                  ) }
-                </div>
-              )}
-              <span>{ error }</span>
-            </div>
+            <Input
+              inputNumber={inputNumber}
+              similarNumbers={similarNumbers}
+              error={error}
+              valid={valid}
+              inputNumberHandler={inputNumberHandler}
+            />
             <div className="phone-book__input">
               <button onClick={ addNumberHandler }>Добавить</button>
             </div>
